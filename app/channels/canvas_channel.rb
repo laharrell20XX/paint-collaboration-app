@@ -7,7 +7,7 @@ class CanvasChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def speak (message)
-    ActionCable.server.broadcast 'canvas_channel', message
+  def stroke (canvasState)
+    ActionCable.server.broadcast 'canvas_channel', canvasState
   end
 end

@@ -5,10 +5,13 @@ App.canvas = App.cable.subscriptions.create "CanvasChannel",
   disconnected: ->
     # Called when the subscription has been terminated by the server
 
-  received: (data) ->
-    message = "<p>#{data['message']}</p>"
-    document.getElementById("canvas").insertAdjacentHTML("afterbegin", message)
-    # Called when there's incoming data on the websocket for this channel
+  received: (canvasState) ->
+    canvasDataArrReceived = Uint8ClampedArray.from(canvasState['canvasState'])
+    curCanvas = document.getElementById("canvas")
+    
+    canvasDataAsImageData = new ImageData(canvasDataArrReceived, curCanvas.width)
+    
+    curCanvas.getContext('2d').putImageData(canvasDataAsImageData, 0, 0)
 
-  speak: (message) ->
-    @perform 'speak', message: message
+  stroke: (canvasState) ->
+    @perform 'stroke', canvasState: canvasState

@@ -28,7 +28,9 @@ app = function () {
 
     makeStroke = function (canvas) {
         var canvasCtx = canvas.getContext("2d");
-        var canvasState = canvasCtx.getImageData(0, 0, canvas.width, canvas.height)
+        var canvasState = canvasCtx.getImageData(0, 0, canvas.width, canvas.height).data
+        var arrayifiedCanvasState = Array.from(canvasState)
+        App.canvas.stroke(arrayifiedCanvasState)
     }
 
     drawLineSeg = function (drawnPoints, tool) {

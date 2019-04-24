@@ -5,13 +5,8 @@ App.canvas = App.cable.subscriptions.create "CanvasChannel",
   disconnected: ->
     # Called when the subscription has been terminated by the server
 
-  received: (canvasState) ->
-    canvasDataArrReceived = Uint8ClampedArray.from(canvasState['canvasState'])
-    curCanvas = document.getElementById("canvas")
-    
-    canvasDataAsImageData = new ImageData(canvasDataArrReceived, curCanvas.width)
-    
-    curCanvas.getContext('2d').putImageData(canvasDataAsImageData, 0, 0)
+  received: (data) ->
+    drawLineSeg(data['drawnPoints'], data['tool'])
 
-  stroke: (canvasState) ->
-    @perform 'stroke', canvasState: canvasState
+  stroke: (drawnPoints, tool) ->
+    @perform 'stroke', drawnPoints: drawnPoints, tool: tool

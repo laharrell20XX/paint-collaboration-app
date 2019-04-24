@@ -7,7 +7,7 @@ class CanvasChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def stroke (canvasState)
-    ActionCable.server.broadcast 'canvas_channel', canvasState
+  def stroke (data)
+    ActionCable.server.broadcast 'canvas_channel', drawnPoints: data['drawnPoints'], tool: data['tool']
   end
 end

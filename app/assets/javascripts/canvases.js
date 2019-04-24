@@ -2,7 +2,7 @@
 // All this logic will automatically be available in application.js.
 // You can use CoffeeScript in this file: http://coffeescript.org/
 
-app = function () {
+(function () {
     var canvasObj = {
         "canvasElm": document.getElementById('canvas'),
         "brush": {
@@ -17,7 +17,7 @@ app = function () {
             if (canvasObj["drawnPoints"].length === 2) {
                 // console.log(drawnPoints);
                 drawLineSeg(canvasObj["drawnPoints"], canvasObj["brush"]);
-                makeStroke(canvasObj["canvasElm"])
+                makeStroke(canvasObj["drawnPoints"], canvasObj["brush"])
                 canvasObj["drawnPoints"].shift();
             }
             canvasObj["drawnPoints"].push({ x: ev.offsetX, y: ev.offsetY });
@@ -26,16 +26,13 @@ app = function () {
         }
     })
 
-    makeStroke = function (canvas) {
-        var canvasCtx = canvas.getContext("2d");
-        var canvasState = canvasCtx.getImageData(0, 0, canvas.width, canvas.height).data
-        var arrayifiedCanvasState = Array.from(canvasState)
-        App.canvas.stroke(arrayifiedCanvasState)
+    makeStroke = function (drawnPoints, tool) {
+        App.canvas.stroke(drawnPoints, tool)
     }
 
     drawLineSeg = function (drawnPoints, tool) {
         var canvasCtx = canvas.getContext("2d");
-        canvasCtx.lineWidth = tool["width"];
+        canvasCtx.lineWidth = tool.width;
         canvasCtx.lineCap = "round";
         canvasCtx.strokeStyle = tool["color"];
         var lastPoint = drawnPoints[0];
@@ -46,4 +43,4 @@ app = function () {
         canvasCtx.stroke();
     }
 
-}()
+})()

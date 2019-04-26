@@ -2,7 +2,7 @@
 // All this logic will automatically be available in application.js.
 // You can use CoffeeScript in this file: http://coffeescript.org/
 
-(function () {
+document.addEventListener("turbolinks:load", function () {
     var canvasObj = {
         "canvasElm": document.getElementById('canvas'),
         "brush": {
@@ -43,4 +43,4 @@
         canvasCtx.stroke();
     }
 
-})()
+})

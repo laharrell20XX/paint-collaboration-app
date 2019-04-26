@@ -1,4 +1,4 @@
-App.canvas = App.cable.subscriptions.create "CanvasChannel",
+App.canvas = App.cable.subscriptions.create {channel:"CanvasChannel", canvas_name: document.getElementById("canvas-name").innerText},
   connected: ->
     # Called when the subscription is ready for use on the server
 

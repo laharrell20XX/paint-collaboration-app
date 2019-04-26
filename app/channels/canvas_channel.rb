@@ -1,6 +1,6 @@
 class CanvasChannel < ApplicationCable::Channel
   def subscribed
-    stream_from 'canvas_channel'
+    stream_from "paint_#{params[:canvas_name]}"
   end
 
   def unsubscribed
@@ -8,6 +8,6 @@ class CanvasChannel < ApplicationCable::Channel
   end
 
   def stroke (data)
-    ActionCable.server.broadcast 'canvas_channel', drawnPoints: data['drawnPoints'], tool: data['tool']
+    ActionCable.server.broadcast "paint_#{params[:canvas_name]}", drawnPoints: data['drawnPoints'], tool: data['tool']
   end
 end

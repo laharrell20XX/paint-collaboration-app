@@ -1,6 +1,28 @@
 <div id="canvas-room">
     <h1 id="canvas-name"><%= @canvas.name %></h1>
+    <div id="color-changer">
+            <button
+                class="color-btn"
+                id="red-color-btn"
+                value="red"
+            ></button>
+            <button
+                class="color-btn"
+                id="black-color-btn"
+                value="black"
+            ></button>
+            <button
+                class="color-btn"
+                id="blue-color-btn"
+                value="blue"
+            ></button>
+    </div>
     <div id="canvas-container">
         <canvas id="canvas" width="400" height="400"></canvas>
     </div>
+    <div id="brush-display">
+            <div
+                id="brush-color"
+            ></div>
+        </div>
 </div>

@@ -2,10 +2,37 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 #canvas-room {
+    #color-changer {
+        display: grid;
+        grid-template-columns: repeat(5, 25px);
+        .color-btn {
+            height: 20px;
+            width: 20px;
+        }
+        #red-color-btn{
+            background-color: red;
+        }
+        #blue-color-btn{
+            background-color: blue;
+        }
+        #black-color-btn{
+            background-color: black;
+        }
+    }
     #canvas-container {
+        margin-top: 5%;
         #canvas {
             border: 1px solid black;
 
+        }
+    }
+    #brush-display {
+        #brush-display {
+            height: 20px;
+            width: 20px;
+            border: 2px solid black;
+            border-radius: 100%;
+            background-color: black;
         }
     }
 }

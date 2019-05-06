@@ -12,6 +12,15 @@
             },
             "drawnPoints": []
         }
+        var colorChangerButtons = document.querySelectorAll("#color-changer .color-btn");
+        var toolStatusDisplayer = document.querySelector("#brush-display");
+        var toolColorDisplayer = toolStatusDisplayer.querySelector("#brush-color");
+        colorChangerButtons.forEach(button =>
+            button.addEventListener("click", () => {
+                canvasObj["brush"].color = button.getAttribute("value");
+                toolColorDisplayer.style.backgroundColor = canvasObj["brush"].color;
+            })
+        );
 
         canvasObj["canvasElm"].addEventListener("mousemove", ev => {
             if (ev.buttons == 1) {

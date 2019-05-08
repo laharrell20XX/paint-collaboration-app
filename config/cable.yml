@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  url: redis://redistogo:15fdb985a54ae6be45cebd94287baa01@crestfish.redistogo.com:10692/
   channel_prefix: grafittiwallapp_production

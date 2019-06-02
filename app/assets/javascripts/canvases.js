@@ -10,7 +10,9 @@
                 "color": "black",
                 "width": 5.0
             },
-            "drawnPoints": []
+            "drawings": [],
+            "curDrawing": {},
+            "curLinePoints": []
         }
         var colorChangerButtons = document.querySelectorAll("#color-changer .color-btn");
         var toolStatusDisplayer = document.querySelector("#brush-display");
@@ -22,26 +24,63 @@
             })
         );
 
-        canvasObj["canvasElm"].addEventListener("mousemove", ev => {
-            if (ev.buttons == 1) {
-                if (canvasObj["drawnPoints"].length === 2) {
-                    // console.log(drawnPoints);
-                    drawLineSeg(canvasObj["drawnPoints"], canvasObj["brush"]);
-                    makeStroke(canvasObj["drawnPoints"], canvasObj["brush"])
-                    canvasObj["drawnPoints"].shift();
+        (function buildCanvasEvents() {
+            canvasObj["canvasElm"].addEventListener("mousemove", ev => {
+                curPoint = { x: ev.offsetX, y: ev.offsetY }
+                if (ev.buttons == 1) {
+                    if (canvasObj["curLinePoints"].length === 2) {
+                        draw(canvasObj["curLinePoints"], canvasObj["brush"]);
+                        // makeStroke(linePoints, canvasObj["brush"])
+                        canvasObj["curDrawing"]["drawnPoints"].push(canvasObj["curLinePoints"][0], curPoint)
+                        canvasObj["curLinePoints"].shift();
+                    }
+                    canvasObj["curLinePoints"].push(curPoint);
+                } else {
+                    canvasObj["curLinePoints"] = [];
                 }
-                canvasObj["drawnPoints"].push({ x: ev.offsetX, y: ev.offsetY });
-            } else {
-                canvasObj["drawnPoints"] = [];
-            }
-        })
+            })
 
-        canvasObj["canvasElm"].addEventListener("mouseup", () => canvasObj["drawnPoints"] = [])
+            canvasObj["canvasElm"].addEventListener("mouseup", () => {
+                canvasObj.drawings.push(canvasObj["curDrawing"]);
+                canvasObj["curDrawing"] = []
+                canvasObj["curLinePoints"] = []
+            })
 
-        canvasObj["canvasElm"].addEventListener("mouseleave", ev => {
-            ev.preventDefault()
-            canvasObj["drawnPoints"] = []
-        })
+            canvasObj["canvasElm"].addEventListener("mouseleave", ev => {
+                ev.preventDefault()
+                drawingPoints = []
+                linePoints = []
+            })
+
+            canvasObj["canvasElm"].addEventListener("mousedown", ev => {
+                canvasObj["curDrawing"]["drawnPoints"] = []
+                canvasObj["curDrawing"]["brush"] = canvasObj["brush"]
+                canvasObj["curDrawing"]["drawnPoints"].push({ x: ev.offsetX, y: ev.offsetY })
+                canvasObj["curLinePoints"].push({ x: ev.offsetX, y: ev.offsetY })
+                draw(canvasObj["curLinePoints"], canvasObj["brush"])
+            })
+
+            canvasObj["canvasElm"].addEventListener("touchmove", ev => {
+                ev.preventDefault()
+                tOffsetX = calcOffsetX(ev.touches[0].pageX)
+                tOffsetY = calcOffsetY(ev.touches[0].pageY)
+                if (linePoints.length === 2) {
+                    drawLineSeg(linePoints, canvasObj["brush"]);
+                    makeStroke(linePoints, canvasObj["brush"]);
+                    linePoints.shift();
+                }
+                linePoints.push({ x: tOffsetX, y: tOffsetY });
+            })
+
+            canvas.addEventListener("touchend", () => {
+                linePoints = []
+            })
+
+        })()
+
+        function copyCanvas(drawings) {
+
+        }
 
         function calcOffsetX(touchX) {
             canvasClientRect = canvasObj['canvasElm'].getBoundingClientRect()
@@ -52,36 +91,38 @@
             return touchY - (canvasClientRect.y - 1)
         }
 
-        canvasObj["canvasElm"].addEventListener("touchmove", ev => {
-            ev.preventDefault()
-            tOffsetX = calcOffsetX(ev.touches[0].pageX)
-            tOffsetY = calcOffsetY(ev.touches[0].pageY)
-            if (canvasObj["drawnPoints"].length === 2) {
-                drawLineSeg(canvasObj["drawnPoints"], canvasObj["brush"]);
-                makeStroke(canvasObj["drawnPoints"], canvasObj["brush"]);
-                canvasObj["drawnPoints"].shift();
-            }
-            canvasObj["drawnPoints"].push({ x: tOffsetX, y: tOffsetY });
-        })
 
-        canvas.addEventListener("touchend", () => {
-            canvasObj["drawnPoints"] = []
-        })
-
-        makeStroke = function (drawnPoints, tool) {
+        function makeStroke(drawnPoints, tool) {
             App.canvas.stroke(drawnPoints, tool)
         }
 
-        drawLineSeg = function (drawnPoints, tool) {
+        function draw(linePoints, tool) {
             var canvasCtx = canvasObj["canvasElm"].getContext("2d");
             canvasCtx.lineWidth = tool.width;
             canvasCtx.lineCap = "round";
             canvasCtx.strokeStyle = tool["color"];
+            if (linePoints.length == 2) {
+                drawLineSeg(canvasCtx, linePoints, tool)
+                // console.log(linePoints)
+            }
+            if (linePoints.length == 1) {
+                drawPoint(canvasCtx, linePoints[0], tool)
+            }
+        }
+
+        function drawLineSeg(canvasCtx, drawnPoints, tool) {
             var lastPoint = drawnPoints[0];
             var curPoint = drawnPoints[1];
             canvasCtx.beginPath();
             canvasCtx.moveTo(lastPoint.x, lastPoint.y);
             canvasCtx.lineTo(curPoint.x, curPoint.y);
+            canvasCtx.stroke();
+        }
+
+        function drawPoint(canvasCtx, drawnPoint, tool) {
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(drawnPoint.x, drawnPoint.y);
+            canvasCtx.lineTo(drawnPoint.x, drawnPoint.y);
             canvasCtx.stroke();
         }
 
